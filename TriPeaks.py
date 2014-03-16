@@ -111,11 +111,17 @@ class TriPeaks(object):
         ''' Measures the time elapsed since the game started '''
         return time.time() - self.start_time
 
-    # Post: returns True if the game is won, false otherwise
+    # Post: returns true if the game is won, false otherwise
     # Run:  TriPeaks.hasWon()
     def hasWon(self):
         ''' Checks if the game is won '''
-        return self.board == 0
+        return all(b is None for b in self.board)
+
+    # Post: returns true if there are no more moves possible, false otherwise
+    # Run:  TriPeaks.hasLost()
+    def hasLost(self):
+        ''' Checks if the game is lost '''
+        return len(self.deck) == 0
 
     # Post: the game rules have been printed to the terminal
     # Run:  TriPeaks.showRules()
