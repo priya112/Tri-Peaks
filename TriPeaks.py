@@ -26,6 +26,9 @@ class TriPeaks(object):
     
         #Breyta sem byrjar ad taka tima
         self.start_time = time.time()
+    
+        #Breyta sem heldur utanum 'moves'
+        self.moves = 0
 
     # Pre:  self.deck contains a deck of cards
     # Post: 28 cards from the deck have been dealt to the board
@@ -40,7 +43,11 @@ class TriPeaks(object):
             self.board[2][i] = self.deck.cards.pop()  
         for i in range(self.boardCols):
             self.board[3][i] = self.deck.cards.pop()
-            
+
+    # Post: returns how many cards are left in the deck
+    # Run: TriPeaks.deckSize()
+    def deckSize(self):
+        return len(self.deck.cards)
 
     # Pre:  row and col are integers
     # Post: returns true if the card at self.board[row][col] is movable
@@ -74,13 +81,15 @@ class TriPeaks(object):
 
         print '\nCard in heap: '
         print self.heap[-1]
+        print 'Cards left in deck:', self.deckSize()
 
     # Pre:
-    # Post:
-    # Run:
+    # Post: userInput contains the string input from the user
+    # Run: TriPeaks.getUserInput()
     def getUserInput(self):
         ''' Handles user inputs '''
-        raise Exception("Fall ekki tilbuid")
+        return raw_input("What is your move? ").split()
+    
 
     # Pre:  self.deck contains at least one Card object, self.heap is a
     #       list of Card objects
@@ -88,7 +97,7 @@ class TriPeaks(object):
     # Run:  TriPeaks.toHeap()
     def toHeap(self):
         ''' Moves the next card from the deck to the heap '''
-        self.heap.append(self.deck.pop())
+        self.heap.append(self.deck.cards.pop())
 
     # Pre:  self.deck contains at least one Card object
     # Post: the next card in the deck has been removed and is returned
@@ -121,7 +130,36 @@ class TriPeaks(object):
     # Run:  TriPeaks.hasLost()
     def hasLost(self):
         ''' Checks if the game is lost '''
-        return len(self.deck) == 0
+        return len(self.deck.cards) == 0
+    
+    # Responds to the user input
+    def gameAction(self, userInput):
+        if userInput[0] == "draw":
+            self.toHeap()
+            self.addScore(100)
+            self.moves += 1
+        elif userInput[0] == "move":
+            '''Moves userInput[1] to heap if legal'''
+            '''A eftir ad utfaera!!! '''
+            self.addScore(150)
+            self.moves += 1
+        elif userInput[0] == "move" and not self.isLegal(userInput[1]):
+            print "This move is not legal."
+        elif userInput[0] == "help":
+            self.showRules()
+        
+        else:
+            print "Unknown command, remember to write 'help' to view known inputs"
+            print "and the rules of the game."
+
+    # Writes out in the end of game if you have won or lost
+    def gameSettlement(self):
+        if self.hasWon():
+            print "You won, congratulations! You are a Tri Peaks master"
+            print "Your time was", self.elapsedTime(), "seconds"
+            print "and you got", self.score, "points in", self.moves, "moves."
+        elif self.hasLost():
+            print "You lost. Practice makes perfect."
 
     # Post: the game rules have been printed to the terminal
     # Run:  TriPeaks.showRules()
@@ -139,6 +177,11 @@ class TriPeaks(object):
 
         If you run out of moves you can move a card from the deck to the
         heap and try again to move a card from the board.
+        
+        How to play:
+            Write "draw" to draw a card from the deck
+            Write "move H7" to move H7 from board to heap
+            Write "help" to view this message
         """ 
 
     # Post: runs the game logic
@@ -147,8 +190,13 @@ class TriPeaks(object):
         ''' Plays the game '''
         print 'Playing game...'
         self.printBoard()
+        while (not self.hasWon() and not self.hasLost()):
+            self.gameAction(self.getUserInput())
+            self.printBoard()
         
 if __name__ == "__main__":
     game = TriPeaks()
     game.showRules()
     game.playGame()
+    game.gameSettlement()
+
