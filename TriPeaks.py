@@ -157,8 +157,9 @@ class TriPeaks(object):
                 scores.reverse()
                 a.writerows(scores[0:5])
             #Utfaera betur
+            print "Nr", "Score", "Time", "Moves"
             for row in scores:
-                print row
+                print row[0], row[1], ceil(float(row[2])), row[3]
 
     # Responds to the user input
     def gameAction(self, userInput):
