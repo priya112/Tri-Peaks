@@ -139,11 +139,27 @@ class TriPeaks(object):
     
     # Skrifar highscore i csv skra svo haegt se ad geyma highscore
     def highscoreTable(self):
-        with open("highscores.csv", "w") as f:
-            a = csv.writer(f, delimiter = ",")
-            highscore = [name, self.score, self.finaltime, self.moves]
-            a.writerow(highscore)
-    
+        scores = []
+        newhighscore = false
+        with open("highscores.csv") as f:
+        data = csv.reader(f, delimiter = ',')
+        for row in data:
+            scores.append([row[0], int(row[1]), row[2]])
+            if self.score > int(row[1]):
+                newhighscore = true
+        
+        if newhighscore:
+            name = raw_input("You are one of the top 5 Tri Peaks players! Enter your name: ")
+            with open("highscores.csv", "w") as csvfile:
+                a = csv.writer(csvfile, delimiter = ',')
+                scores.append([name, self.score, self.finaltime, self.moves])
+                scores.sort(key=lambda x: x[1])
+                scores.reverse()
+                a.writerows(scores[0:5])
+            #Utfaera betur
+            for row in scores:
+                print row
+
     # Responds to the user input
     def gameAction(self, userInput):
         if userInput[0] == "draw":
@@ -212,4 +228,5 @@ if __name__ == "__main__":
     game.showRules()
     game.playGame()
     game.gameSettlement()
+    game.highscoreTable()
 
