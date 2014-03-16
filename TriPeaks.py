@@ -1,6 +1,7 @@
 from Deck import *
 from Card import *
 import time
+import csv
 
 class TriPeaks(object):
 
@@ -26,6 +27,9 @@ class TriPeaks(object):
     
         #Breyta sem byrjar ad taka tima
         self.start_time = time.time()
+        
+        #Lokatimi leiks
+        self.finaltime = 0
     
         #Breyta sem heldur utanum 'moves'
         self.moves = 0
@@ -118,7 +122,8 @@ class TriPeaks(object):
     # Run:  TriPeaks.elapsedTime
     def elapsedTime(self):
         ''' Measures the time elapsed since the game started '''
-        return time.time() - self.start_time
+        self.finaltime = time.time() - self.start_time
+    
 
     # Post: returns true if the game is won, false otherwise
     # Run:  TriPeaks.hasWon()
@@ -131,6 +136,13 @@ class TriPeaks(object):
     def hasLost(self):
         ''' Checks if the game is lost '''
         return len(self.deck.cards) == 0
+    
+    # Skrifar highscore i csv skra svo haegt se ad geyma highscore
+    def highscoreTable(self):
+        with open("highscores.csv", "w") as f:
+            a = csv.writer(f, delimiter = ",")
+            highscore = [name, self.score, self.finaltime, self.moves]
+            a.writerow(highscore)
     
     # Responds to the user input
     def gameAction(self, userInput):
@@ -155,8 +167,9 @@ class TriPeaks(object):
     # Writes out in the end of game if you have won or lost
     def gameSettlement(self):
         if self.hasWon():
+            self.elapsedTime()
             print "You won, congratulations! You are a Tri Peaks master"
-            print "Your time was", self.elapsedTime(), "seconds"
+            print "Your time was", self.finaltime, "seconds"
             print "and you got", self.score, "points in", self.moves, "moves."
         elif self.hasLost():
             print "You lost. Practice makes perfect."
