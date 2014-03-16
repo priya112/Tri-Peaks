@@ -10,65 +10,55 @@ from Card import *
 class Deck(object):
     
     # Creates a new deck with 'noCards' number of cards
-    def __init__(self, noCards):
+    def __init__(self, numCards, cards=None):
         self.cards = []
-        self.numCards = noCards
-        self.setCards()
+        self.setCards(numCards)
 
     # Called when a Deck object is printed
     def __repr__(self):
         return str(self.cards)
+
         
-    # Initializes the cards in the deck
-    def setCards(self):
-        self.cards = []
-        for i in range(1,(self.numCards/4 + 1)):
-            self.cards.append(Card('H',i))
-            self.cards.append(Card('S',i))
-            self.cards.append(Card('T',i))
-            self.cards.append(Card('L',i))
-            
-    # Shuffles the order of the cards in the deck
+    # Pre:  cards is a list of Card objects
+    # Post: all Card objects in cards have been added to Deck.cards,
+    #       if no list of Card objects is indicated, then a normal 52
+    #       deck is initialized
+    # Run:  Deck.setCards() or Deck.setCards(cards)
+    def setCards(self, numCards, cards=None):
+        ''' Initializes the cards in the deck '''
+        if cards is None:
+            self.cards = []
+            for i in range(1,(numCards/4 + 1)):
+                self.cards.append(Card('H',i))
+                self.cards.append(Card('S',i))
+                self.cards.append(Card('T',i))
+                self.cards.append(Card('L',i))
+        else:
+            self.cards = cards
+    
     def shuffleCards(self):
+        ''' Shuffles the order of the cards in the deck '''
         random.shuffle(self.cards)
-        
-    # Returns card number 'i' in the deck 
-    def getNextCard(self, i):
+
+    def isEmpty(self):
+        ''' Checks if the deck is empty '''
+        return len(self.cards) == 0
+    
+    def getCard(self,i):
+        ''' Returns card number 'i' in the deck '''
         return self.cards[i]
     
-    # Adds the card 'card' to the deck
+    def getNextCard(self):
+        ''' Returns the next card in the deck '''
+        if (not self.isEmpty()):
+            return self.cards[0]
+    
     def addCard(self, card):
+        ''' Adds the card 'card' to the deck '''
         self.cards.append(card)
         
-    # Removes the card 'card' from the deck
-    def removeCard(self, card):
-        self.cards.remove(card)
-        
-    # Removes two cards between card number 'prevCardNo' and 'prevCardNo+3' if they have the same sort
-    def removeBetween(self, prevCardNo):
-        if (len(self.cards) < prevCardNo+3 or len(self.cards) < 4):
-            print 'Card index out of range'
-            return
-        prevCardSort = self.cards[prevCardNo].sort
-        laterCardSort = self.cards[prevCardNo+3].sort
-        if (prevCardSort != laterCardSort):
-            print 'The cards are not the same sort!'
-            return
-        self.removeCard(self.cards[prevCardNo+1])
-        self.removeCard(self.cards[prevCardNo+1])
-        
-    # Removes four cards from card number 'prevCardNo' to 'prevCardNo+3' if they have the same value
-    def removeFour(self, firstCardNo):
-        if (len(self.cards) < firstCardNo+3):
-            print 'Card index out of range'
-            return
-        firstCardVal = self.cards[firstCardNo].value
-        fourthCardVal = self.cards[firstCardNo+3].value
-        if (firstCardVal != fourthCardVal):
-            print 'The cards do not have the same value'
-            return
-        for _ in range(4):
-            self.removeCard(self.cards[firstCardNo])
-
     
-        
+    def removeCard(self, card):
+        ''' Removes the card 'card' from the deck '''
+        if (not self.isEmpty()):
+            self.cards.remove(card)        
