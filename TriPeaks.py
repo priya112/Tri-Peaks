@@ -16,7 +16,7 @@ class TriPeaks(object):
         self.deck.shuffleCards()
         
         #2D array of cards in the board, initialized as None
-        self.board = [[None for _ in range(self.boardCols)] for _ in range(self.boardRows)]
+        self.board = self.initBoard()
         self.dealToBoard()
         
         #Cards in the heap
@@ -34,19 +34,31 @@ class TriPeaks(object):
         #Breyta sem heldur utanum 'moves'
         self.moves = 0
 
+    def initBoard(self):
+        board = []
+        for i in range(3):
+            board.append([None for _ in range(3*(i+1))])
+        board.append([None for _ in range(10)])
+        return board
+
     # Pre:  self.deck contains a deck of cards
     # Post: 28 cards from the deck have been dealt to the board
     # Run:  TriPeaks.dealToBoard()
     def dealToBoard(self):
         ''' Deals cards from the deck to the board '''
-        for i in range(0,self.boardCols-1,3):
-            self.board[0][i] = self.deck.cards.pop()
-        for i in [i for i in range(self.boardCols-2) if i%3 is not 2]:
-            self.board[1][i] = self.deck.cards.pop()
-        for i in range(self.boardCols-1):
-            self.board[2][i] = self.deck.cards.pop()  
-        for i in range(self.boardCols):
-            self.board[3][i] = self.deck.cards.pop()
+        for i in range(3):
+            self.board[i] = [self.deck.cards.pop() for _ in range(3*(i+1))]
+        self.board[3] = [self.deck.cards.pop() for _ in range(10)]
+
+        
+##        for i in range(0,self.boardCols-1,3):
+##            self.board[0][i] = self.deck.cards.pop()
+##        for i in [i for i in range(self.boardCols-2) if i%3 is not 2]:
+##            self.board[1][i] = self.deck.cards.pop()
+##        for i in range(self.boardCols-1):
+##            self.board[2][i] = self.deck.cards.pop()  
+##        for i in range(self.boardCols):
+##            self.board[3][i] = self.deck.cards.pop()
 
     # Post: returns how many cards are left in the deck
     # Run: TriPeaks.deckSize()
@@ -73,19 +85,27 @@ class TriPeaks(object):
     def printBoard(self):
         ''' Prints the board to the console '''
         print "Cards in board: \n"
-        for i in range(self.boardRows):
-            for j in range(self.boardCols):
-                if (self.board[i][j] is None):
-                    print " "*(3-i),
-                elif (self.isMovable(i,j)):
+##        for i in range(self.boardRows):
+##            for j in range(self.boardCols):
+##                if (self.board[i][j] is None):
+##                    print " "*(3-i),
+##                elif (not self.isMovable(i,j)):
+##                    print " #  ",
+##                else:
+##                    print " "*(3-i), self.board[i][j],
+        for row in range(3):
+            for c in range(3*(row+1)):
+                if (not self.isMovable(row,c)):
                     print " #  ",
                 else:
-                    print " "*(3-i), self.board[i][j],
+                    print " "*(3-row), self.board[row][c],
             print ''
 
         print '\nCard in heap: '
         print self.heap[-1]
         print 'Cards left in deck:', self.deckSize()
+        print 'Score: ', self.score
+        print 'Moves: ', self.moves
 
     # Pre:
     # Post: userInput contains the string input from the user
@@ -93,6 +113,20 @@ class TriPeaks(object):
     def getUserInput(self):
         ''' Handles user inputs '''
         return raw_input("What is your move? ").split()
+
+    # Pre:  cardString is a string
+    # Post: removes card from board and returns it
+    # Run:  TriPeaks.getBoardCard(cardString)
+    def getBoardCard(self, cardString):
+        ''' Finds the card cardString in the board '''
+        # TODO: laga tetta fall, er bara skitamix
+        for row in self.board:
+            for c in row:
+                if (c is not None and c.toString() == cardString):
+                    card = c
+                    c = None
+                    return card
+        #return next( (c for c in (row for row in self.board if c.toString()==cardString),None)
     
 
     # Pre:  self.deck contains at least one Card object, self.heap is a
@@ -142,7 +176,7 @@ class TriPeaks(object):
         scores = []
         newhighscore = false
         with open("highscores.csv") as f:
-        data = csv.reader(f, delimiter = ',')
+            data = csv.reader(f, delimiter = ',')
         for row in data:
             scores.append([row[0], int(row[1]), row[2]])
             if self.score > int(row[1]):
@@ -169,7 +203,8 @@ class TriPeaks(object):
             self.moves += 1
         elif userInput[0] == "move":
             '''Moves userInput[1] to heap if legal'''
-            '''A eftir ad utfaera!!! '''
+            card = self.getBoardCard(userInput[1])
+            self.heap.append(card)              # moves card on top of heap
             self.addScore(150)
             self.moves += 1
         elif userInput[0] == "move" and not self.isLegal(userInput[1]):
