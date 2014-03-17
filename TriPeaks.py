@@ -30,7 +30,7 @@ class TriPeaks(object):
         self.start_time = time.time()
         
         #Lokatimi leiks
-        self.finaltime = 0
+        self.finaltime = 0.0
     
         #Breyta sem heldur utanum 'moves'
         self.moves = 0
@@ -186,7 +186,7 @@ class TriPeaks(object):
                         players.append(col)
                 scores.append(players)
         
-        if newhighscore:
+        if newhighscore and self.hasWon():
             name = raw_input("You are one of the top 5 Tri Peaks players! Enter your name: ")
             with open("highscores.csv", "w") as csvfile:
                 a = csv.writer(csvfile, delimiter = ',')
@@ -195,11 +195,13 @@ class TriPeaks(object):
                 scores.reverse()
                 a.writerows(scores[0:5])
 
+        print ''
         print "Name\t", "\tPoints", "\tTime", "\tMoves"
         print "---------------------------------------"
         for row in scores[0:5]:
             playername = row[0]
             print playername[0:6], '\t', '\t', row[1], '\t', math.ceil(float(row[2])), '\t', row[3]
+        print ''
 
     # Responds to the user input
     def gameAction(self, userInput):
@@ -209,7 +211,10 @@ class TriPeaks(object):
             self.moves += 1
         elif userInput[0] == "move":
             '''Moves userInput[1] to heap if legal'''
-            card = self.getBoardCard(userInput[1])
+            if len(userInput) == 1:
+                card = self.getBoardCard(raw_input("What card do you want to move? "))
+            else:
+                card = self.getBoardCard(userInput[1])
             self.moves += 1
         elif userInput[0] == "move" and not self.isLegal(userInput[1]):
             print "This move is not legal."
@@ -228,6 +233,7 @@ class TriPeaks(object):
             print "You won, congratulations! You are a Tri Peaks master"
             print "Your time was", self.finaltime, "seconds"
             print "and you got", self.score, "points in", self.moves, "moves."
+            self.highscoreTable()
         elif self.hasLost():
             print "You lost. Practice makes perfect."
 
@@ -270,5 +276,4 @@ if __name__ == "__main__":
     game.showRules()
     game.playGame()
     game.gameSettlement()
-    game.highscoreTable()
 
