@@ -167,10 +167,10 @@ class TriPeaks(object):
         newhighscore = false
         with open("highscores.csv") as f:
             data = csv.reader(f, delimiter = ',')
-        for row in data:
-            scores.append([row[0], int(row[1]), row[2]])
-            if self.score > int(row[1]):
-                newhighscore = true
+            for row in data:
+                scores.append([row[0], int(row[1]), row[2]])
+                if self.score > int(row[1]):
+                    newhighscore = true
         
         if newhighscore:
             name = raw_input("You are one of the top 5 Tri Peaks players! Enter your name: ")
