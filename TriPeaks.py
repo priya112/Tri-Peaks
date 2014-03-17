@@ -50,16 +50,6 @@ class TriPeaks(object):
             self.board[i] = [self.deck.cards.pop() for _ in range(3*(i+1))]
         self.board[3] = [self.deck.cards.pop() for _ in range(10)]
 
-        
-##        for i in range(0,self.boardCols-1,3):
-##            self.board[0][i] = self.deck.cards.pop()
-##        for i in [i for i in range(self.boardCols-2) if i%3 is not 2]:
-##            self.board[1][i] = self.deck.cards.pop()
-##        for i in range(self.boardCols-1):
-##            self.board[2][i] = self.deck.cards.pop()  
-##        for i in range(self.boardCols):
-##            self.board[3][i] = self.deck.cards.pop()
-
     # Post: returns how many cards are left in the deck
     # Run: TriPeaks.deckSize()
     def deckSize(self):
@@ -85,21 +75,23 @@ class TriPeaks(object):
     def printBoard(self):
         ''' Prints the board to the console '''
         print "Cards in board: \n"
-##        for i in range(self.boardRows):
-##            for j in range(self.boardCols):
-##                if (self.board[i][j] is None):
-##                    print " "*(3-i),
-##                elif (not self.isMovable(i,j)):
-##                    print " #  ",
-##                else:
-##                    print " "*(3-i), self.board[i][j],
         for row in range(3):
             for c in range(3*(row+1)):
-                if (not self.isMovable(row,c)):
+                if (c is None):
+                    print "   ",
+                elif (not self.isMovable(row,c)):
                     print " #  ",
                 else:
                     print " "*(3-row), self.board[row][c],
             print ''
+        for card in range(10):
+            if (self.board[3][card] is None):
+                print "   ",
+            elif (not self.isMovable(3,card)):
+                print " #  ",
+            else:
+                print self.board[3][card],
+        print ''
 
         print '\nCard in heap: '
         print self.heap[-1]
@@ -120,14 +112,12 @@ class TriPeaks(object):
     def getBoardCard(self, cardString):
         ''' Finds the card cardString in the board '''
         # TODO: laga tetta fall, er bara skitamix
-        for row in self.board:
-            for c in row:
+        for i,row in enumerate(self.board):
+            for j,c in enumerate(row):
                 if (c is not None and c.toString() == cardString):
-                    card = c
-                    c = None
-                    return card
-        #return next( (c for c in (row for row in self.board if c.toString()==cardString),None)
-    
+                    self.board[i][j] = None
+                    return c
+        
 
     # Pre:  self.deck contains at least one Card object, self.heap is a
     #       list of Card objects
