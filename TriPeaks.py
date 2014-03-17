@@ -169,13 +169,21 @@ class TriPeaks(object):
     # Skrifar highscore i csv skra svo haegt se ad geyma highscore
     def highscoreTable(self):
         scores = []
-        newhighscore = false
+        newhighscore = False
         with open("highscores.csv") as f:
             data = csv.reader(f, delimiter = ',')
-        for row in data:
-            scores.append([row[0], int(row[1]), row[2]])
-            if self.score > int(row[1]):
-                newhighscore = true
+            for row in data:
+                players = []
+                checker = 0
+                for col in row:
+                    checker += 1
+                    try:
+                        players.append(int(col))
+                        if checker == 2 and self.score > int(col):
+                            newhighscore = True
+                    except:
+                        players.append(col)
+                scores.append(players)
         
         if newhighscore:
             name = raw_input("You are one of the top 5 Tri Peaks players! Enter your name: ")
@@ -185,10 +193,12 @@ class TriPeaks(object):
                 scores.sort(key=lambda x: x[1])
                 scores.reverse()
                 a.writerows(scores[0:5])
-            #Utfaera betur
-            print "Name", "\tPoints", "\tTime", "\tMoves"
-            for row in scores:
-                print row[0], '\t', row[1], '\t', ceil(float(row[2])), '\t', row[3]
+
+        print "Name\t", "\tPoints", "\tTime", "\tMoves"
+        print "---------------------------------------"
+            for row in scores[0:5]:
+                playername = row[0]
+                print playername[0:6], '\t', '\t', row[1], '\t', ceil(float(row[2])), '\t', row[3]
 
     # Responds to the user input
     def gameAction(self, userInput):
@@ -204,7 +214,8 @@ class TriPeaks(object):
             print "This move is not legal."
         elif userInput[0] == "help":
             self.showRules()
-        
+        elif userInput[0] == "top5":
+            self.highscoreTable()
         else:
             print "Unknown command, remember to write 'help' to view known inputs"
             print "and the rules of the game."
@@ -240,6 +251,7 @@ class TriPeaks(object):
             Write "draw" to draw a card from the deck
             Write "move H7" to move H7 from board to heap
             Write "help" to view this message
+            Write "top5" to view the highscore table
         """ 
 
     # Post: runs the game logic
