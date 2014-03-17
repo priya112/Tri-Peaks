@@ -68,7 +68,7 @@ class TriPeaks(object):
     # Run:  TriPeaks.isLegal(card)
     def isLegal(self, card):
         ''' Checks if a card move is legal '''
-        return abs(self.heap.getNextCard().value - card.value) == 1        
+        return abs(self.heap[-1].value - card.value)%13 == 1        
     
     # Post: the board has been printed to the console
     # Run:  TriPeaks.printBoard()
@@ -115,8 +115,13 @@ class TriPeaks(object):
         for i,row in enumerate(self.board):
             for j,c in enumerate(row):
                 if (c is not None and c.toString() == cardString):
-                    self.board[i][j] = None
-                    return c
+                    if (self.isLegal(self.board[i][j])):
+                        self.board[i][j] = None
+                        self.addScore(150)
+                        self.heap.append(c) 
+                        return c
+                    else:
+                        print "This move is not legal, try again!"
         
 
     # Pre:  self.deck contains at least one Card object, self.heap is a
@@ -204,8 +209,6 @@ class TriPeaks(object):
         elif userInput[0] == "move":
             '''Moves userInput[1] to heap if legal'''
             card = self.getBoardCard(userInput[1])
-            self.heap.append(card)              # moves card on top of heap
-            self.addScore(150)
             self.moves += 1
         elif userInput[0] == "move" and not self.isLegal(userInput[1]):
             print "This move is not legal."
