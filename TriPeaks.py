@@ -99,6 +99,8 @@ class TriPeaks(object):
         print 'Cards left in deck:', self.deckSize()
         print 'Score: ', self.score
         print 'Moves: ', self.moves
+        self.elapsedTime()
+        print "Time:", int(self.finaltime), "seconds"
 
     # Pre:
     # Post: userInput contains the string input from the user
