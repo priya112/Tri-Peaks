@@ -2,6 +2,7 @@ from Deck import *
 from Card import *
 import time
 import csv
+import math
 
 class TriPeaks(object):
 
@@ -196,9 +197,9 @@ class TriPeaks(object):
 
         print "Name\t", "\tPoints", "\tTime", "\tMoves"
         print "---------------------------------------"
-            for row in scores[0:5]:
-                playername = row[0]
-                print playername[0:6], '\t', '\t', row[1], '\t', ceil(float(row[2])), '\t', row[3]
+        for row in scores[0:5]:
+            playername = row[0]
+            print playername[0:6], '\t', '\t', row[1], '\t', math.ceil(float(row[2])), '\t', row[3]
 
     # Responds to the user input
     def gameAction(self, userInput):
