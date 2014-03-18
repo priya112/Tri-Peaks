@@ -197,7 +197,13 @@ class TriPeaks(object):
     # Run:  TriPeaks.hasLost()
     def hasLost(self):
         ''' Checks if the game is lost '''
-        return len(self.deck.cards) == 0
+        if not len(self.deck.cards) == 0:
+            return False
+        for i,row in enumerate(self.board):
+            if any(self.isLegal(c) for c in self.board[i]):
+                return False
+        return True
+        
     
     # Skrifar highscore i csv skra svo haegt se ad geyma highscore
     def highscoreTable(self):
