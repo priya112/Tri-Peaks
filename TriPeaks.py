@@ -187,8 +187,8 @@ class TriPeaks(object):
     # Run:  TriPeaks.hasWon()
     def hasWon(self):
         ''' Checks if the game is won '''
-        for row in self.board:
-            if any(b is not None for b in self.board):
+        for r,row in enumerate(self.board):
+            if any(b is not None for b in self.board[r]):
                 return False
         return True
 
