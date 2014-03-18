@@ -61,6 +61,12 @@ class TriPeaks(object):
     # Run:  TriPeaks.isMovable(row,col)
     def isMovable(self, row, col):
         ''' Checks if a card in the board is movable '''
+        if (row == self.boardRows-1):
+            return True
+        elif (row == 0):
+            return (self.board[row+1][2*col] is None and self.board[row+1][2*col+1] is None)
+        elif (row == 1):
+            return (self.board[row+1][col+col/2] is None and self.board[row+1][col+col/2+1] is None)
         return (row == self.boardRows-1) or (self.board[row+1][col] is None and self.board[row+1][col+1] is None)
     
     # Pre:  card is a Card object
