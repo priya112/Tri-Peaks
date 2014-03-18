@@ -182,8 +182,9 @@ class TriPeaks(object):
     def hasWon(self):
         ''' Checks if the game is won '''
         for row in self.board:
-            if any(b is not None for b in self.board):
-                return False
+            for card in row:
+                if any(card is not None for row in self.board):
+                    return False
         return True
 
     # Post: returns true if there are no more moves possible, false otherwise
