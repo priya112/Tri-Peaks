@@ -69,38 +69,58 @@ class TriPeaks(object):
     # Run:  TriPeaks.isLegal(card)
     def isLegal(self, card):
         ''' Checks if a card move is legal '''
-        return abs(self.heap[-1].value - card.value)%11 == 1        
-    
+        return abs(self.heap[-1].value - card.value)%11 == 1
+
+
+    # Pre:  row and card are integers
+    # Post: card no. card in row no. row has been printed to the console
+    # Run:  TriPeaks.printCard(row, col)
+    def printCard(self, row, card):
+        if (self.board[row][card] is None):
+                print '   ',
+        elif (not self.isMovable(row,card)):
+            print ' # ',
+        else:
+            print '%-3s' % (self.board[row][card]),    
+
     # Post: the board has been printed to the console
     # Run:  TriPeaks.printBoard()
     def printBoard(self):
         ''' Prints the board to the console '''
         print "Cards in board: \n"
-        for row in range(3):
-            for c in range(3*(row+1)):
-                if (self.board[row][c] is None):
-                    print "   ",
-                elif (not self.isMovable(row,c)):
-                    print " #  ",
-                else:
-                    print " "*(3-row), self.board[row][c],
-            print ''
-        for card in range(10):
-            if (self.board[3][card] is None):
-                print "   ",
-            elif (not self.isMovable(3,card)):
-                print " #  ",
-            else:
-                print self.board[3][card],
-        print ''
+        # Row 0
+        for c in range(3):
+            print ' '*5,
+            self.printCard(0,c)
+            print ' ',
+        print ' '
+        
+        # Row 1
+        print '   ',
+        for c in range(6):
+            if (c%2 == 0 and c>0):
+                print '   ',
+            self.printCard(1,c)
+        print ' '
 
-        print '\nCard in heap: '
-        print self.heap[-1]
+        # Row 2
+        print ' ',
+        for c in range(9):
+            self.printCard(2,c)
+        print ' '
+
+        # Row 3
+        for c in range(10):
+            self.printCard(3,c)
+        print ' '
+        
+        print '\nCard in heap: ', self.heap[-1]
+        print ''
         print 'Cards left in deck:', self.deckSize()
         print 'Score: ', self.score
         print 'Moves: ', self.moves
         self.elapsedTime()
-        print "Time:", int(self.finaltime), "seconds"
+        print 'Time:', int(self.finaltime), 'seconds'
 
     # Pre:
     # Post: userInput contains the string input from the user
@@ -118,7 +138,7 @@ class TriPeaks(object):
         for i,row in enumerate(self.board):
             for j,c in enumerate(row):
                 if (c is not None and c.toString() == cardString):
-                    if (self.isLegal(self.board[i][j])):
+                    if (self.isLegal(self.board[i][j]) and self.isMovable(i,j)):
                         self.board[i][j] = None
                         self.addScore(150)
                         self.heap.append(c) 
@@ -161,7 +181,10 @@ class TriPeaks(object):
     # Run:  TriPeaks.hasWon()
     def hasWon(self):
         ''' Checks if the game is won '''
-        return all(b is None for b in self.board)
+        for row in self.board:
+            if any(b is not None for b in self.board):
+                return False
+        return True
 
     # Post: returns true if there are no more moves possible, false otherwise
     # Run:  TriPeaks.hasLost()
@@ -171,6 +194,7 @@ class TriPeaks(object):
     
     # Skrifar highscore i csv skra svo haegt se ad geyma highscore
     def highscoreTable(self):
+        ''' Writes a highscore to a csv file '''
         scores = []
         newhighscore = False
         with open("highscores.csv") as f:
@@ -207,6 +231,7 @@ class TriPeaks(object):
 
     # Responds to the user input
     def gameAction(self, userInput):
+        ''' Responds to the user input '''
         if userInput[0] == "draw":
             self.toHeap()
             self.addScore(100)
@@ -230,6 +255,7 @@ class TriPeaks(object):
 
     # Writes out in the end of game if you have won or lost
     def gameSettlement(self):
+        ''' Writes out message to the user after the game '''
         if self.hasWon():
             self.elapsedTime()
             print "You won, congratulations! You are a Tri Peaks master"
@@ -267,7 +293,6 @@ class TriPeaks(object):
     # Run:  TriPeaks.playGame()
     def playGame(self):
         ''' Plays the game '''
-        print 'Playing game...'
         self.printBoard()
         while (not self.hasWon() and not self.hasLost()):
             self.gameAction(self.getUserInput())
