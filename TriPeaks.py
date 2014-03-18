@@ -220,6 +220,7 @@ class TriPeaks(object):
                 scores.append(players)
         
         if newhighscore and self.hasWon():
+            print ''
             name = raw_input("You are one of the top 5 Tri Peaks players! Enter your name: ")
             with open("highscores.csv", "w") as csvfile:
                 a = csv.writer(csvfile, delimiter = ',')
@@ -265,6 +266,7 @@ class TriPeaks(object):
         ''' Writes out message to the user after the game '''
         if self.hasWon():
             self.elapsedTime()
+            print ''
             print "You won, congratulations! You are a Tri Peaks master"
             print "Your time was", self.finaltime, "seconds"
             print "and you got", self.score, "points in", self.moves, "moves."
