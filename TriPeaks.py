@@ -203,9 +203,10 @@ class TriPeaks(object):
         ''' Checks if the game is lost '''
         if not len(self.deck.cards) == 0:
             return False
-        for i,row in enumerate(self.board):
-            if (any(self.isLegal(c)) for c in self.board[i]):
-                return False
+        for row in self.board:
+            for c in row:
+                if (self.isLegal(c)):
+                    return False
         return True
         
     
