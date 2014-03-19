@@ -75,6 +75,8 @@ class TriPeaks(object):
     # Run:  TriPeaks.isLegal(card)
     def isLegal(self, card):
         ''' Checks if a card move is legal '''
+        if card is None:
+            return False
         return abs(self.heap[-1].value - card.value)%11 == 1
 
 
@@ -133,7 +135,10 @@ class TriPeaks(object):
     # Run: TriPeaks.getUserInput()
     def getUserInput(self):
         ''' Handles user inputs '''
-        return raw_input("What is your move? ").split()
+        user = ''
+        while (len(user) < 1):
+            user = raw_input("What is your move? ").split()
+        return user
 
     # Pre:  cardString is a string
     # Post: removes card from board and returns it
@@ -199,7 +204,7 @@ class TriPeaks(object):
         if not len(self.deck.cards) == 0:
             return False
         for i,row in enumerate(self.board):
-            if any(self.isLegal(c) for c in self.board[i]):
+            if (any(self.isLegal(c)) for c in self.board[i]):
                 return False
         return True
         
