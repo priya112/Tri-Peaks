@@ -9,6 +9,8 @@ class TriPeaks(object):
     #Smidur
     def __init__(self):
 
+        self.isPlaying = True
+
         self.boardRows = 4
         self.boardCols = 10
         
@@ -164,7 +166,8 @@ class TriPeaks(object):
     # Run:  TriPeaks.toHeap()
     def toHeap(self):
         ''' Moves the next card from the deck to the heap '''
-        self.heap.append(self.deck.cards.pop())
+        if len(self.deck.cards) > 0:
+            self.heap.append(self.deck.cards.pop())
 
     # Pre:  self.deck contains at least one Card object
     # Post: the next card in the deck has been removed and is returned
@@ -195,6 +198,7 @@ class TriPeaks(object):
         for r,row in enumerate(self.board):
             if any(c is not None for c in self.board[r]):
                 return False
+        self.isPlaying = False
         return True
 
     # Post: returns true if there are no more moves possible, false otherwise
@@ -203,10 +207,11 @@ class TriPeaks(object):
         ''' Checks if the game is lost '''
         if not len(self.deck.cards) == 0:
             return False
-        for row in self.board:
-            for c in row:
-                if (self.isLegal(c)):
+        for r,row in enumerate(self.board):
+            for c,card in enumerate(row):
+                if (self.isLegal(card) and self.isMovable(r,c)):
                     return False
+        self.isPlaying = False
         return True
         
     
@@ -268,6 +273,8 @@ class TriPeaks(object):
             self.showRules()
         elif userInput[0] == "top5":
             self.highscoreTable()
+        elif userInput[0] == "quit":
+            self.quitGame()
         else:
             print "Unknown command, remember to write 'help' to view known inputs"
             print "and the rules of the game."
@@ -307,6 +314,7 @@ class TriPeaks(object):
             Write "move H7" to move H7 from board to heap
             Write "help" to view this message
             Write "top5" to view the highscore table
+            Write "quit" to quit the game
         """ 
 
     # Post: runs the game logic
@@ -314,9 +322,14 @@ class TriPeaks(object):
     def playGame(self):
         ''' Plays the game '''
         self.printBoard()
-        while (not self.hasWon() and not self.hasLost()):
+        while ((not self.hasWon() and not self.hasLost()) and self.isPlaying):
             self.gameAction(self.getUserInput())
             self.printBoard()
+
+    def quitGame(self):
+        ''' Quits current game '''
+        self.isPlaying = False
+        
         
 if __name__ == "__main__":
     game = TriPeaks()
